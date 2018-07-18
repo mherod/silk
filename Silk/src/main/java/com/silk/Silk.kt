@@ -4,19 +4,22 @@ import android.webkit.WebView
 
 class Silk (
         val webView: WebView,
-        val urlInterceptor: UrlChangeInterceptor?
+        val urlInterceptor: List<UrlChangeInterceptor>?
 ) {
 
-    private constructor(builder: Builder) : this(builder.webView, builder.urlInterceptor)
+    private constructor(builder: Builder) : this(builder.webView, builder.urlInterceptors)
 
     companion object {
-        inline fun using(webview: WebView, block: Builder.() -> Unit) = Builder(webview).apply(block).build()
+        inline fun createSilk(webView: WebView, block: Builder.() -> Unit) = Builder(webView).apply(block).build()
     }
 
-    class Builder(
-            val webView: WebView
-    ) {
-        var urlInterceptor: UrlChangeInterceptor? = null
+    class Builder(val webView: WebView) {
+
+        var urlInterceptors = mutableListOf<UrlChangeInterceptor>()
+
+        fun addUrlChangeInterceptor(urlChangeInterceptor: UrlChangeInterceptor) {
+            urlInterceptors.add(urlChangeInterceptor)
+        }
 
         fun build() = Silk(this)
     }

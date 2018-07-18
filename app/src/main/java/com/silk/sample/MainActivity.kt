@@ -3,8 +3,7 @@ package com.silk.sample
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.sample.R
-import com.silk.Silk
-import com.silk.UrlChangeInterceptor
+import com.silk.Silk.Companion.createSilk
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -13,6 +12,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Silk.using(webView) { urlInterceptor = UrlChangeInterceptor()}
+        createSilk(webView) {
+
+            addUrlChangeInterceptor(null)
+            addUrlChangeInterceptor(null)
+
+        }
     }
 }
