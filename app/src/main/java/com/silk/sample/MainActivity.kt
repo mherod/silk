@@ -23,11 +23,13 @@ class MainActivity : AppCompatActivity() {
 
             addHeadersToRequests(provideExtraHeaders())
 
-            enableJavascript()
-            enableJavascriptToOpenNewWindows()
+            webViewSettings {
+
+                javaScriptEnabled = true
+                allowFileAccess = true
+            }
 
             enableDebugging(isDebugabble())
-
         }
     }
 

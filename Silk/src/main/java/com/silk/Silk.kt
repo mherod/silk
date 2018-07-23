@@ -1,5 +1,6 @@
 package com.silk
 
+import android.webkit.WebSettings
 import android.webkit.WebView
 
 typealias WebViewTitleChangeListener = (title: String) -> Unit
@@ -9,17 +10,19 @@ class Silk (
         val urlInterceptor: List<UrlChangeInterceptor>?,
         val titleChangeListeners: List<WebViewTitleChangeListener>?,
         val headers: HashMap<String, String>,
-        val enableJavascript: Boolean,
-        val enableJavascriptToOpenNewWindows: Boolean,
+        val webSettings: WebSettings,
         val isDebuggable: Boolean
 ) {
+
+    init {
+        //modify web view here
+    }
 
     private constructor(builder: Builder) : this(builder.webView,
             builder.urlInterceptors,
             builder.titleChangeListeners,
             builder.headers,
-            builder.enableJavascript,
-            builder.enableJavascriptToOpenNewWindows,
+            builder.webSettings,
             builder.isDebuggable)
 
     companion object {
@@ -31,8 +34,8 @@ class Silk (
         var urlInterceptors = mutableListOf<UrlChangeInterceptor>()
         var titleChangeListeners = mutableListOf<WebViewTitleChangeListener>()
         var headers = hashMapOf<String, String>()
-        var enableJavascript = false
-        var enableJavascriptToOpenNewWindows = false
+
+        lateinit var webSettings: WebSettings
 
         var isDebuggable = false
 
@@ -48,12 +51,8 @@ class Silk (
             this.headers.putAll(headers)
         }
 
-        fun enableJavascript() {
-            enableJavascript = true
-        }
-
-        fun enableJavascriptToOpenNewWindows() {
-            enableJavascriptToOpenNewWindows = true
+        fun webViewSettings(function: WebSettings.() -> Unit) {
+             function.invoke(webSettings)
         }
 
         fun enableDebugging(isDebuggable: Boolean) {
@@ -61,5 +60,6 @@ class Silk (
         }
 
         fun build() = Silk(this)
+
     }
 }
