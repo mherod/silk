@@ -8,8 +8,11 @@ typealias WebViewTitleChangeListener = (title: String) -> Unit
 class Silk (
         val webView: WebView,
         val urlInterceptor: List<UrlChangeInterceptor>?,
-        val titleChangeListeners: List<WebViewTitleChangeListener>?,
+        val titleChangeListeners: List<TitleChangeListener>?,
+        val javascriptInterfaces: List<JavaScriptInterface>?,
+        val progressChangeListeners: List<ProgressChangeListener>?,
         val headers: HashMap<String, String>,
+        val userAgent: String,
         val webSettings: WebSettings,
         val isDebuggable: Boolean
 ) {
@@ -21,9 +24,12 @@ class Silk (
     private constructor(builder: Builder) : this(builder.webView,
             builder.urlInterceptors,
             builder.titleChangeListeners,
-            builder.headers,
+            builder.javascriptInterfaces,
+            builder.progressChangeListeners,
+            builder.requestHeaders,
+            builder.userAgent,
             builder.webSettings,
-            builder.isDebuggable)
+            builder.enableDebugging)
 
     companion object {
         inline fun createSilk(webView: WebView, block: Builder.() -> Unit) = Builder(webView).apply(block).build()
@@ -32,31 +38,32 @@ class Silk (
     class Builder(val webView: WebView) {
 
         var urlInterceptors = mutableListOf<UrlChangeInterceptor>()
-        var titleChangeListeners = mutableListOf<WebViewTitleChangeListener>()
-        var headers = hashMapOf<String, String>()
+        var titleChangeListeners = mutableListOf<TitleChangeListener>()
+        var javascriptInterfaces = mutableListOf<JavaScriptInterface>()
+        var progressChangeListeners = mutableListOf<ProgressChangeListener>()
+        var requestHeaders = hashMapOf<String, String>()
+        var userAgent = ""
+        var enableDebugging = false
+        var webSettings: WebSettings = webView.settings
 
-        lateinit var webSettings: WebSettings
-
-        var isDebuggable = false
-
-        fun addUrlChangeInterceptor(urlChangeInterceptor: UrlChangeInterceptor) {
-            urlInterceptors.add(urlChangeInterceptor)
+        fun urlChangeInterceptor(block: UrlChangeInterceptorBuilder.() -> Unit) {
+            urlInterceptors.add(UrlChangeInterceptorBuilder().apply(block).build())
         }
 
-        fun addTitleChangeListener(titleChangeListener: WebViewTitleChangeListener) {
-            titleChangeListeners.add(titleChangeListener)
+        fun titleChangeListener(block: TitleChangeListenerBuilder.() -> Unit) {
+            titleChangeListeners.add(TitleChangeListenerBuilder().apply(block).build())
         }
 
-        fun addHeadersToRequests(headers: HashMap<String, String>) {
-            this.headers.putAll(headers)
+        fun progressChangeListener(block: ProgressChangeListenerBuilder.() -> Unit) {
+            progressChangeListeners.add(ProgressChangeListenerBuilder().apply(block).build())
+        }
+
+        fun javascriptInterface(block: JavaScriptInterfaceBuilder.() -> Unit) {
+            javascriptInterfaces.add(JavaScriptInterfaceBuilder().apply(block).build())
         }
 
         fun webViewSettings(function: WebSettings.() -> Unit) {
              function.invoke(webSettings)
-        }
-
-        fun enableDebugging(isDebuggable: Boolean) {
-            this.isDebuggable = isDebuggable
         }
 
         fun build() = Silk(this)
