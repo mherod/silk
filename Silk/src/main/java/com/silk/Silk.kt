@@ -1,5 +1,6 @@
 package com.silk
 
+import android.content.Context
 import android.webkit.WebSettings
 import android.webkit.WebView
 
@@ -37,6 +38,7 @@ class Silk (
 
     class Builder(val webView: WebView) {
 
+        val context: Context get() = webView.context
         var urlInterceptors = mutableListOf<UrlChangeInterceptor>()
         var titleChangeListeners = mutableListOf<TitleChangeListener>()
         var javascriptInterfaces = mutableListOf<JavaScriptInterface>()

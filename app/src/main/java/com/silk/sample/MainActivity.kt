@@ -1,5 +1,6 @@
 package com.silk.sample
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -24,19 +25,19 @@ class MainActivity : AppCompatActivity() {
             urlChangeInterceptor {
 
                 url = "http://google.com"
-                callback = { url -> Toast.makeText(webView.context, "Found $url", Toast.LENGTH_SHORT).show() }
+                callback = { url -> Toast.makeText(context, "Found $url", Toast.LENGTH_SHORT).show() }
             }
 
             javascriptInterface {
 
                 jsObject = "JSOBJECT"
-                jsInterface = WebAppInterface(webView.context)
+                jsInterface = WebAppInterface(context)
             }
 
             javascriptInterface {
 
                 jsObject = "ANOTHER_JSOBJECT"
-                jsInterface = WebAppInterface(webView.context)
+                jsInterface = WebAppInterface(context)
             }
 
             titleChangeListener {
